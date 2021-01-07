@@ -1,0 +1,36 @@
+<html>
+	<head>
+		<meta charset="utf-8"/>
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="/theme/css/master.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    	<script src="/js/custom.js"></script>
+
+		<script src="/wasm/wasm_exec.js"></script>
+		<script>
+			const go = new Go();
+			WebAssembly.instantiateStreaming(fetch("/vecty/main.wasm"), go.importObject).then((result) => {
+				go.run(result.instance);
+			});
+		</script>
+		<style>
+			.vjPeopleView {
+				grid-template-columns: 20ch 20ch 25ch 30ch 15ch 15ch;
+			}
+
+			.vjPeopleEdit {
+				grid-template-columns: 20ch 20ch 25ch 30ch 15ch 20ch;
+			}
+
+			.vjPeopleList {
+				grid-template-columns: 15ch 15ch 25ch 30ch 20ch 15ch;
+			}
+		</style>
+	</head>
+	<body>wasm test</body>
+	<div id="wasm1"></div>
+    <div id="debug"></div>
+</html>
