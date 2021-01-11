@@ -1,8 +1,6 @@
-package main
+package mainMarkdown
 
 import (
-	"log"
-
 	"github.com/hexops/vecty"
 	"github.com/hexops/vecty/elem"
 	"github.com/hexops/vecty/event"
@@ -27,8 +25,7 @@ type PageView struct {
 
 // Render implements the vecty.Component interface.
 func (p *PageView) Render() vecty.ComponentOrHTML {
-	//return elem.Body(
-	temp := elem.Body(
+	return elem.Body(
 		// Display a textarea on the right-hand side of the page.
 		elem.Div(
 			vecty.Markup(
@@ -37,8 +34,8 @@ func (p *PageView) Render() vecty.ComponentOrHTML {
 			elem.TextArea(
 				vecty.Markup(
 					vecty.Style("font-family", "monospace"),
-					vecty.Property("rows", 10),
-					vecty.Property("cols", 50),
+					vecty.Property("rows", 14),
+					vecty.Property("cols", 70),
 
 					// When input is typed into the textarea, update the local
 					// component state and rerender.
@@ -52,10 +49,8 @@ func (p *PageView) Render() vecty.ComponentOrHTML {
 		),
 
 		// Render the markdown.
-		//&Markdown{Input: p.Input},
+		&Markdown{Input: p.Input},
 	)
-	log.Println("mainRender1 temp =", temp)
-	return temp
 }
 
 // Markdown is a simple component which renders the Input markdown as sanitized

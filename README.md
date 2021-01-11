@@ -11,3 +11,6 @@ go build -o main.wasm
 ## Modules
 https://github.com/hexops/vecty
 
+
+## Go Directives
+https://golang.org/cmd/go/#hdr-Build_constraints
