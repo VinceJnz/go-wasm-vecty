@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"log"
 	"syscall/js"
 
 	"github.com/VinceJnz/go-wasm-vecty/actions"
@@ -15,7 +14,6 @@ import (
 const debugTag = "main_"
 
 func main() {
-	log.Println(debugTag + "main1 ")
 	var appStore *store.Store
 	appStore = store.New()
 	attachLocalStorage(appStore)

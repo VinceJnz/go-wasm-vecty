@@ -2,15 +2,17 @@ package dispatcher
 
 // ID is a unique identifier representing a registered callback function.
 type ID int
+
+// Callback stores a callback function that can be called by the dispatcher
 type callback func(action interface{})
 
-//Dispatcher ??
+//Dispatcher structure used by the dispatcher for storing callbacks
 type Dispatcher struct {
 	idCounter ID
 	callbacks map[ID]callback
 }
 
-//New ??
+// New retuns a new instance of Dispatcher
 func New() *Dispatcher {
 	d := new(Dispatcher)
 	d.callbacks = make(map[ID]callback)

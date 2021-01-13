@@ -9,7 +9,7 @@ import (
 
 const debugTag = "store_"
 
-//Store ??
+// Store is the data and utilities used for managing and accessing the store
 type Store struct {
 	// Items represents all of the TODO items in the store.
 	Items []*model.Item
@@ -20,11 +20,11 @@ type Store struct {
 	// Listeners is the listeners that will be invoked when the store changes.
 	Listeners *storeutil.ListenerRegistry
 
-	//Dispatcher ??
+	//Dispatcher is a pointer the the dispatcher
 	Dispatcher *dispatcher.Dispatcher
 }
 
-//New ??
+// New returns a new instance of a Store
 func New() *Store {
 	s := new(Store)
 	s.Filter = model.All

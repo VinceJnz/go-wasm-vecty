@@ -1,5 +1,5 @@
 # go-wasm-vecty
- 
+todomvc example built using vecty and deployed via wasm. 
 ## WASM Notes
 
 #### Environment vars need to be set in at a CMD line. The VS Terminal does not work in this instance
@@ -11,6 +11,3 @@ go build -o main.wasm
 ## Modules
 https://github.com/hexops/vecty
 
-
-## Go Directives
-https://golang.org/cmd/go/#hdr-Build_constraints
