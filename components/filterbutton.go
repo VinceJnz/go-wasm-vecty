@@ -1,13 +1,12 @@
 package components
 
 import (
+	"github.com/VinceJnz/go-wasm-vecty/actions"
+	"github.com/VinceJnz/go-wasm-vecty/store"
+	"github.com/VinceJnz/go-wasm-vecty/store/model"
 	"github.com/hexops/vecty"
 	"github.com/hexops/vecty/elem"
 	"github.com/hexops/vecty/event"
-	"github.com/hexops/vecty/example/todomvc/actions"
-	"github.com/hexops/vecty/example/todomvc/dispatcher"
-	"github.com/hexops/vecty/example/todomvc/store"
-	"github.com/hexops/vecty/example/todomvc/store/model"
 	"github.com/hexops/vecty/prop"
 )
 
@@ -16,12 +15,13 @@ import (
 type FilterButton struct {
 	vecty.Core
 
+	Store  *store.Store
 	Label  string            `vecty:"prop"`
 	Filter model.FilterState `vecty:"prop"`
 }
 
 func (b *FilterButton) onClick(event *vecty.Event) {
-	dispatcher.Dispatch(&actions.SetFilter{
+	b.Store.Dispatcher.Dispatch(&actions.SetFilter{
 		Filter: b.Filter,
 	})
 }
@@ -31,7 +31,7 @@ func (b *FilterButton) Render() vecty.ComponentOrHTML {
 	return elem.ListItem(
 		elem.Anchor(
 			vecty.Markup(
-				vecty.MarkupIf(store.Filter == b.Filter, vecty.Class("selected")),
+				vecty.MarkupIf(b.Store.Filter == b.Filter, vecty.Class("selected")),
 				prop.Href("#"),
 				event.Click(b.onClick).PreventDefault(),
 			),

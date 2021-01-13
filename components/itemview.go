@@ -1,12 +1,12 @@
 package components
 
 import (
+	"github.com/VinceJnz/go-wasm-vecty/actions"
+	"github.com/VinceJnz/go-wasm-vecty/store"
+	"github.com/VinceJnz/go-wasm-vecty/store/model"
 	"github.com/hexops/vecty"
 	"github.com/hexops/vecty/elem"
 	"github.com/hexops/vecty/event"
-	"github.com/hexops/vecty/example/todomvc/actions"
-	"github.com/hexops/vecty/example/todomvc/dispatcher"
-	"github.com/hexops/vecty/example/todomvc/store/model"
 	"github.com/hexops/vecty/prop"
 	"github.com/hexops/vecty/style"
 )
@@ -16,6 +16,7 @@ import (
 type ItemView struct {
 	vecty.Core
 
+	Store     *store.Store
 	Index     int         `vecty:"prop"`
 	Item      *model.Item `vecty:"prop"`
 	editing   bool
@@ -29,13 +30,13 @@ func (p *ItemView) Key() interface{} {
 }
 
 func (p *ItemView) onDestroy(event *vecty.Event) {
-	dispatcher.Dispatch(&actions.DestroyItem{
+	p.Store.Dispatcher.Dispatch(&actions.DestroyItem{
 		Index: p.Index,
 	})
 }
 
 func (p *ItemView) onToggleCompleted(event *vecty.Event) {
-	dispatcher.Dispatch(&actions.SetCompleted{
+	p.Store.Dispatcher.Dispatch(&actions.SetCompleted{
 		Index:     p.Index,
 		Completed: event.Target.Get("checked").Bool(),
 	})
@@ -56,7 +57,7 @@ func (p *ItemView) onEditInput(event *vecty.Event) {
 func (p *ItemView) onStopEdit(event *vecty.Event) {
 	p.editing = false
 	vecty.Rerender(p)
-	dispatcher.Dispatch(&actions.SetTitle{
+	p.Store.Dispatcher.Dispatch(&actions.SetTitle{
 		Index: p.Index,
 		Title: p.editTitle,
 	})

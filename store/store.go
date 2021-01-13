@@ -1,40 +1,52 @@
 package store
 
 import (
-	"github.com/hexops/vecty/example/todomvc/actions"
-	"github.com/hexops/vecty/example/todomvc/dispatcher"
-	"github.com/hexops/vecty/example/todomvc/store/model"
-	"github.com/hexops/vecty/example/todomvc/store/storeutil"
+	"github.com/VinceJnz/go-wasm-vecty/actions"
+	"github.com/VinceJnz/go-wasm-vecty/dispatcher"
+	"github.com/VinceJnz/go-wasm-vecty/store/model"
+	"github.com/VinceJnz/go-wasm-vecty/store/storeutil"
 )
 
-var (
+const debugTag = "store_"
+
+//Store ??
+type Store struct {
 	// Items represents all of the TODO items in the store.
 	Items []*model.Item
 
 	// Filter represents the active viewing filter for items.
-	Filter = model.All
+	Filter model.FilterState
 
 	// Listeners is the listeners that will be invoked when the store changes.
-	Listeners = storeutil.NewListenerRegistry()
-)
+	Listeners *storeutil.ListenerRegistry
 
-func init() {
-	dispatcher.Register(onAction)
+	//Dispatcher ??
+	Dispatcher *dispatcher.Dispatcher
+}
+
+//New ??
+func New() *Store {
+	s := new(Store)
+	s.Filter = model.All
+	s.Listeners = storeutil.NewListenerRegistry()
+	s.Dispatcher = dispatcher.New()
+	s.Dispatcher.Register(s.onAction)
+	return s
 }
 
 // ActiveItemCount returns the current number of items that are not completed.
-func ActiveItemCount() int {
-	return count(false)
+func (s *Store) ActiveItemCount() int {
+	return s.count(false)
 }
 
 // CompletedItemCount returns the current number of items that are completed.
-func CompletedItemCount() int {
-	return count(true)
+func (s *Store) CompletedItemCount() int {
+	return s.count(true)
 }
 
-func count(completed bool) int {
+func (s *Store) count(completed bool) int {
 	count := 0
-	for _, item := range Items {
+	for _, item := range s.Items {
 		if item.Completed == completed {
 			count++
 		}
@@ -42,44 +54,44 @@ func count(completed bool) int {
 	return count
 }
 
-func onAction(action interface{}) {
+func (s *Store) onAction(action interface{}) {
 	switch a := action.(type) {
 	case *actions.ReplaceItems:
-		Items = a.Items
+		s.Items = a.Items
 
 	case *actions.AddItem:
-		Items = append(Items, &model.Item{Title: a.Title, Completed: false})
+		s.Items = append(s.Items, &model.Item{Title: a.Title, Completed: false})
 
 	case *actions.DestroyItem:
-		copy(Items[a.Index:], Items[a.Index+1:])
-		Items = Items[:len(Items)-1]
+		copy(s.Items[a.Index:], s.Items[a.Index+1:])
+		s.Items = s.Items[:len(s.Items)-1]
 
 	case *actions.SetTitle:
-		Items[a.Index].Title = a.Title
+		s.Items[a.Index].Title = a.Title
 
 	case *actions.SetCompleted:
-		Items[a.Index].Completed = a.Completed
+		s.Items[a.Index].Completed = a.Completed
 
 	case *actions.SetAllCompleted:
-		for _, item := range Items {
+		for _, item := range s.Items {
 			item.Completed = a.Completed
 		}
 
 	case *actions.ClearCompleted:
 		var activeItems []*model.Item
-		for _, item := range Items {
+		for _, item := range s.Items {
 			if !item.Completed {
 				activeItems = append(activeItems, item)
 			}
 		}
-		Items = activeItems
+		s.Items = activeItems
 
 	case *actions.SetFilter:
-		Filter = a.Filter
+		s.Filter = a.Filter
 
 	default:
 		return // don't fire listeners
 	}
 
-	Listeners.Fire()
+	s.Listeners.Fire()
 }

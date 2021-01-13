@@ -3,13 +3,12 @@ package components
 import (
 	"strconv"
 
+	"github.com/VinceJnz/go-wasm-vecty/actions"
+	"github.com/VinceJnz/go-wasm-vecty/store"
+	"github.com/VinceJnz/go-wasm-vecty/store/model"
 	"github.com/hexops/vecty"
 	"github.com/hexops/vecty/elem"
 	"github.com/hexops/vecty/event"
-	"github.com/hexops/vecty/example/todomvc/actions"
-	"github.com/hexops/vecty/example/todomvc/dispatcher"
-	"github.com/hexops/vecty/example/todomvc/store"
-	"github.com/hexops/vecty/example/todomvc/store/model"
 	"github.com/hexops/vecty/prop"
 	"github.com/hexops/vecty/style"
 )
@@ -18,7 +17,7 @@ import (
 type PageView struct {
 	vecty.Core
 
-	Items        []*model.Item `vecty:"prop"`
+	Store        *store.Store
 	newItemTitle string
 }
 
@@ -28,7 +27,7 @@ func (p *PageView) onNewItemTitleInput(event *vecty.Event) {
 }
 
 func (p *PageView) onAdd(event *vecty.Event) {
-	dispatcher.Dispatch(&actions.AddItem{
+	p.Store.Dispatcher.Dispatch(&actions.AddItem{
 		Title: p.newItemTitle,
 	})
 	p.newItemTitle = ""
@@ -36,11 +35,11 @@ func (p *PageView) onAdd(event *vecty.Event) {
 }
 
 func (p *PageView) onClearCompleted(event *vecty.Event) {
-	dispatcher.Dispatch(&actions.ClearCompleted{})
+	p.Store.Dispatcher.Dispatch(&actions.ClearCompleted{})
 }
 
 func (p *PageView) onToggleAllCompleted(event *vecty.Event) {
-	dispatcher.Dispatch(&actions.SetAllCompleted{
+	p.Store.Dispatcher.Dispatch(&actions.SetAllCompleted{
 		Completed: event.Target.Get("checked").Bool(),
 	})
 }
@@ -54,7 +53,7 @@ func (p *PageView) Render() vecty.ComponentOrHTML {
 			),
 
 			p.renderHeader(),
-			vecty.If(len(store.Items) > 0,
+			vecty.If(len(p.Store.Items) > 0,
 				p.renderItemList(),
 				p.renderFooter(),
 			),
@@ -93,7 +92,7 @@ func (p *PageView) renderHeader() *vecty.HTML {
 }
 
 func (p *PageView) renderFooter() *vecty.HTML {
-	count := store.ActiveItemCount()
+	count := p.Store.ActiveItemCount()
 	itemsLeftText := " items left"
 	if count == 1 {
 		itemsLeftText = " item left"
@@ -119,20 +118,20 @@ func (p *PageView) renderFooter() *vecty.HTML {
 			vecty.Markup(
 				vecty.Class("filters"),
 			),
-			&FilterButton{Label: "All", Filter: model.All},
+			&FilterButton{Label: "All", Filter: model.All, Store: p.Store},
 			vecty.Text(" "),
-			&FilterButton{Label: "Active", Filter: model.Active},
+			&FilterButton{Label: "Active", Filter: model.Active, Store: p.Store},
 			vecty.Text(" "),
-			&FilterButton{Label: "Completed", Filter: model.Completed},
+			&FilterButton{Label: "Completed", Filter: model.Completed, Store: p.Store},
 		),
 
-		vecty.If(store.CompletedItemCount() > 0,
+		vecty.If(p.Store.CompletedItemCount() > 0,
 			elem.Button(
 				vecty.Markup(
 					vecty.Class("clear-completed"),
 					event.Click(p.onClearCompleted),
 				),
-				vecty.Text("Clear completed ("+strconv.Itoa(store.CompletedItemCount())+")"),
+				vecty.Text("Clear completed ("+strconv.Itoa(p.Store.CompletedItemCount())+")"),
 			),
 		),
 	)
@@ -170,11 +169,11 @@ func (p *PageView) renderInfo() *vecty.HTML {
 
 func (p *PageView) renderItemList() *vecty.HTML {
 	var items vecty.List
-	for i, item := range store.Items {
-		if (store.Filter == model.Active && item.Completed) || (store.Filter == model.Completed && !item.Completed) {
+	for i, item := range p.Store.Items {
+		if (p.Store.Filter == model.Active && item.Completed) || (p.Store.Filter == model.Completed && !item.Completed) {
 			continue
 		}
-		items = append(items, &ItemView{Index: i, Item: item})
+		items = append(items, &ItemView{Index: i, Item: item, Store: p.Store})
 	}
 
 	return elem.Section(
@@ -187,7 +186,7 @@ func (p *PageView) renderItemList() *vecty.HTML {
 				vecty.Class("toggle-all"),
 				prop.ID("toggle-all"),
 				prop.Type(prop.TypeCheckbox),
-				prop.Checked(store.CompletedItemCount() == len(store.Items)),
+				prop.Checked(p.Store.CompletedItemCount() == len(p.Store.Items)),
 				event.Change(p.onToggleAllCompleted),
 			),
 		),

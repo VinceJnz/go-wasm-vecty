@@ -2,31 +2,36 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"syscall/js"
 
+	"github.com/VinceJnz/go-wasm-vecty/actions"
+	"github.com/VinceJnz/go-wasm-vecty/components"
+	"github.com/VinceJnz/go-wasm-vecty/store"
+	"github.com/VinceJnz/go-wasm-vecty/store/model"
 	"github.com/hexops/vecty"
-	"github.com/hexops/vecty/example/todomvc/actions"
-	"github.com/hexops/vecty/example/todomvc/components"
-	"github.com/hexops/vecty/example/todomvc/dispatcher"
-	"github.com/hexops/vecty/example/todomvc/store"
-	"github.com/hexops/vecty/example/todomvc/store/model"
 )
 
+const debugTag = "main_"
+
 func main() {
-	attachLocalStorage()
+	log.Println(debugTag + "main1 ")
+	var appStore *store.Store
+	appStore = store.New()
+	attachLocalStorage(appStore)
 
 	vecty.SetTitle("GopherJS • TodoMVC")
 	vecty.AddStylesheet("https://rawgit.com/tastejs/todomvc-common/master/base.css")
 	vecty.AddStylesheet("https://rawgit.com/tastejs/todomvc-app-css/master/index.css")
-	p := &components.PageView{}
-	store.Listeners.Add(p, func() {
-		p.Items = store.Items
+	p := &components.PageView{Store: appStore}
+
+	appStore.Listeners.Add(p, func() {
 		vecty.Rerender(p)
 	})
 	vecty.RenderBody(p)
 }
 
-func attachLocalStorage() {
+func attachLocalStorage(store *store.Store) {
 	store.Listeners.Add(nil, func() {
 		data, err := json.Marshal(store.Items)
 		if err != nil {
@@ -40,7 +45,7 @@ func attachLocalStorage() {
 		if err := json.Unmarshal([]byte(data.String()), &items); err != nil {
 			println("failed to load items: " + err.Error())
 		}
-		dispatcher.Dispatch(&actions.ReplaceItems{
+		store.Dispatcher.Dispatch(&actions.ReplaceItems{
 			Items: items,
 		})
 	}
