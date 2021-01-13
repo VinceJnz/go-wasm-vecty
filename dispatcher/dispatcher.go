@@ -3,10 +3,10 @@ package dispatcher
 // ID is a unique identifier representing a registered callback function.
 type ID int
 
-// Callback stores a callback function that can be called by the dispatcher
+// Callback stores a single callback function that can be called by the dispatcher
 type callback func(action interface{})
 
-//Dispatcher structure used by the dispatcher for storing callbacks
+//Dispatcher structure used by the dispatcher for storing a map of callbacks
 type Dispatcher struct {
 	idCounter ID
 	callbacks map[ID]callback

@@ -1,5 +1,7 @@
 # go-wasm-vecty
-todomvc example built using vecty and deployed via wasm.
+A copy of the vecty todomvc example built using golang/vecty and deployed as a wasm.
+
+This update removes all the package global variables from the origional example.
 ## WASM Notes
 
 Environment vars need to be set in at a CMD line. (The VS Terminal does not work in this instance)
