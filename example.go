@@ -38,7 +38,7 @@ func attachLocalStorage(store *store.Store) {
 		js.Global().Get("localStorage").Set("items", string(data))
 	})
 
-	// gets from the web browser local storage and puts it into the items list
+	// gets data from the web browser local storage and puts it into store.Store.Items slice (a slice of model.Item structures)
 	if data := js.Global().Get("localStorage").Get("items"); !data.IsUndefined() {
 		var items []*model.Item
 		if err := json.Unmarshal([]byte(data.String()), &items); err != nil {
