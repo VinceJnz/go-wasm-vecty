@@ -1,5 +1,9 @@
 package dispatcher
 
+import "log"
+
+const debugTag = "dispatcher_"
+
 // ID is a unique identifier representing a registered callback function.
 type ID int
 
@@ -33,6 +37,7 @@ func (d *Dispatcher) Register(callback callback) ID {
 	d.idCounter++
 	id := d.idCounter
 	d.callbacks[id] = callback
+	log.Println(debugTag+"Register1 ", "d =", d)
 	return id
 }
 

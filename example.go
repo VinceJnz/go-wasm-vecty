@@ -30,7 +30,7 @@ func main() {
 }
 
 func attachLocalStorage(store *store.Store) {
-	store.Listeners.Add(nil, func() {
+	store.Listeners.Add(nil, func() { // Anonymous function stores data in the web browser local storage.
 		data, err := json.Marshal(store.Items)
 		if err != nil {
 			println("failed to store items: " + err.Error())
@@ -38,6 +38,7 @@ func attachLocalStorage(store *store.Store) {
 		js.Global().Get("localStorage").Set("items", string(data))
 	})
 
+	// gets from the web browser local storage and puts it into the items list
 	if data := js.Global().Get("localStorage").Get("items"); !data.IsUndefined() {
 		var items []*model.Item
 		if err := json.Unmarshal([]byte(data.String()), &items); err != nil {
