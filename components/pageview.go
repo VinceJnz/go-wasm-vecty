@@ -1,6 +1,7 @@
 package components
 
 import (
+	"log"
 	"strconv"
 
 	"github.com/VinceJnz/go-wasm-vecty/actions"
@@ -23,6 +24,7 @@ type PageView struct {
 
 func (p *PageView) onNewItemTitleInput(event *vecty.Event) {
 	p.newItemTitle = event.Target.Get("value").String()
+	log.Println("pageview onNewItemTitleInput ", "p.newItemTitle =", p.newItemTitle)
 	vecty.Rerender(p)
 }
 
@@ -46,6 +48,7 @@ func (p *PageView) onToggleAllCompleted(event *vecty.Event) {
 
 // Render implements the vecty.Component interface.
 func (p *PageView) Render() vecty.ComponentOrHTML {
+	log.Println("pageview Render ", "p.newItemTitle =", p.newItemTitle)
 	return elem.Body(
 		elem.Section(
 			vecty.Markup(
@@ -168,6 +171,7 @@ func (p *PageView) renderInfo() *vecty.HTML {
 }
 
 func (p *PageView) renderItemList() *vecty.HTML {
+	log.Println("pageview renderItemList1 ", "p.newItemTitle =", p.newItemTitle)
 	var items vecty.List
 	for i, item := range p.Store.Items {
 		if (p.Store.Filter == model.Active && item.Completed) || (p.Store.Filter == model.Completed && !item.Completed) {
@@ -175,7 +179,7 @@ func (p *PageView) renderItemList() *vecty.HTML {
 		}
 		items = append(items, &ItemView{Index: i, Item: item, Store: p.Store})
 	}
-
+	log.Println("pageview renderItemList2 ", "p.newItemTitle =", p.newItemTitle)
 	return elem.Section(
 		vecty.Markup(
 			vecty.Class("main"),

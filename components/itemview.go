@@ -1,6 +1,8 @@
 package components
 
 import (
+	"log"
+
 	"github.com/VinceJnz/go-wasm-vecty/actions"
 	"github.com/VinceJnz/go-wasm-vecty/store"
 	"github.com/VinceJnz/go-wasm-vecty/store/model"
@@ -26,6 +28,7 @@ type ItemView struct {
 
 // Key implements the vecty.Keyer interface.
 func (p *ItemView) Key() interface{} {
+	log.Println("ItemView Key", "p.Index =", p.Index)
 	return p.Index
 }
 
@@ -50,6 +53,7 @@ func (p *ItemView) onStartEdit(event *vecty.Event) {
 }
 
 func (p *ItemView) onEditInput(event *vecty.Event) {
+	log.Println("itemview onEditInput", "p.Index =", p.Index)
 	p.editTitle = event.Target.Get("value").String()
 	vecty.Rerender(p)
 }
@@ -65,6 +69,7 @@ func (p *ItemView) onStopEdit(event *vecty.Event) {
 
 // Render implements the vecty.Component interface.
 func (p *ItemView) Render() vecty.ComponentOrHTML {
+	log.Println("itemview Render", "p.Index =", p.Index)
 	p.input = elem.Input(
 		vecty.Markup(
 			vecty.Class("edit"),
