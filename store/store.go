@@ -20,7 +20,7 @@ type Store struct {
 	// Listeners is the listeners that will be invoked when the store changes.
 	Listeners *storeutil.ListenerRegistry
 
-	//Dispatcher is a pointer the the dispatcher
+	//Dispatcher is a pointer to the dispatcher
 	Dispatcher *dispatcher.Dispatcher
 }
 
