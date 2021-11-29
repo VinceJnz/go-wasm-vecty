@@ -25,6 +25,8 @@ func New() *Dispatcher {
 }
 
 // Dispatch dispatches the given action to all registered callbacks.
+//(Command pattern) Execute all the functions that are Registered. We don't pass any data, the function has to be able to get any data it needs.
+//(Observer pattern) Execute all the functions that are Registered. We pass some context data which for example might be a copy of the store.
 func (d *Dispatcher) Dispatch(action interface{}) {
 	for _, c := range d.callbacks {
 		c(action)

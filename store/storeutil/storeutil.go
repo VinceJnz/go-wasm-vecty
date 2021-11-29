@@ -33,6 +33,8 @@ func (r *ListenerRegistry) Remove(key interface{}) {
 }
 
 // Fire invokes all listeners in the registry.
+//(Command pattern) Execute all the functions that are listening. We don't pass any data, the function has to be able to get any data it needs.
+//(Observer pattern) Execute all the functions that are listening. We pass some context data which for example might be a copy of the store.
 func (r *ListenerRegistry) Fire() {
 	for _, l := range r.listeners {
 		l()
