@@ -174,10 +174,10 @@ func (p *PageView) renderItemList() *vecty.HTML {
 	log.Println("pageview renderItemList1 ", "p.newItemTitle =", p.newItemTitle)
 	var items vecty.List
 	for i, item := range p.Store.Items {
-		if (p.Store.Filter == model.Active && item.Completed) || (p.Store.Filter == model.Completed && !item.Completed) {
-			continue
+		if (p.Store.Filter == model.Active && item.Completed) || (p.Store.Filter == model.Completed && !item.Completed) { //This implements the store filter: 1. Active, 2. Completed
+			continue // This skips the next item - i.e. it does not add it to the items list: 1. Not added to list if complete (not-active), 2. Not added to list if active (not-completed)
 		}
-		items = append(items, &ItemView{Index: i, Item: item, Store: p.Store})
+		items = append(items, &ItemView{Index: i, Item: item, Store: p.Store}) // 1. Active items added, 2. Completed items added
 	}
 	log.Println("pageview renderItemList2 ", "p.newItemTitle =", p.newItemTitle)
 	return elem.Section(
